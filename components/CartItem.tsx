@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { CartItem as CartItemType } from '@/utils/types';
-import { updateCartItemQuantity, removeFromCart } from '@/utils/ecommerce';
+import { updateCartItemQuantity, removeFromCart } from '@/utils/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 

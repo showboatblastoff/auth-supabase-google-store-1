@@ -1,7 +1,6 @@
-import { getCategoryBySlug, getProductsByCategory, getCategories } from '@/utils/ecommerce';
+import { getCategoryBySlug, getProductsByCategory, getCategories } from '@/utils/supabaseClient';
 import ProductGrid from '@/components/ProductGrid';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabaseServer';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -15,27 +14,7 @@ interface CategoryPageProps {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = params;
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // This can be ignored if middleware is handling cookies
-          }
-        },
-      },
-    }
-  );
+  const supabase = createClient();
   
   const { data: { user } } = await supabase.auth.getUser();
   const category = await getCategoryBySlug(slug);

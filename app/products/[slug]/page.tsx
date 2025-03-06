@@ -1,6 +1,5 @@
-import { getProductBySlug, getFeaturedProducts } from '@/utils/ecommerce';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { getProductBySlug, getFeaturedProducts } from '@/utils/supabaseClient';
+import { createClient } from '@/utils/supabaseServer';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProductGrid from '@/components/ProductGrid';
@@ -16,27 +15,7 @@ interface ProductPageProps {
 
 export default async function ProductDetailPage({ params }: ProductPageProps) {
   const { slug } = params;
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // This can be ignored if middleware is handling cookies
-          }
-        },
-      },
-    }
-  );
+  const supabase = createClient();
   
   const { data: { user } } = await supabase.auth.getUser();
   const product = await getProductBySlug(slug);

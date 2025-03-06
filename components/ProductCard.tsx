@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { Product } from '@/utils/types';
-import { addToCart } from '@/utils/ecommerce';
+import { addToCart } from '@/utils/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
